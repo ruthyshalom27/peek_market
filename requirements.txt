@@ -1,2 +1,6 @@
 Flask==3.1.2
 requests==2.32.5
+pandas
+Flask-SocketIO
+simple-websocket
+gunicorn
