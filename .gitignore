@@ -20,5 +20,3 @@ env/
 Thumbs.db
 
 *.log
-
-dataset/*.csv
