@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1">
+
+    <title>Peek — Market Watchlist</title>
+
+
+    <!-- =====================================================
+         GOOGLE FONTS
+    ====================================================== -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         BOOTSTRAP ICONS
+    ====================================================== -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- =====================================================
+         CHART.JS
+    ====================================================== -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4">
+    </script>
+
+
+    <!-- =====================================================
+         SOCKET.IO
+    ====================================================== -->
+    <script
+        src="https://cdn.socket.io/4.8.1/socket.io.min.js">
+    </script>
+
+
+    <!-- =====================================================
+         PEEK CSS
+    ====================================================== -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/peek.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+    {% block body %}
+    {% endblock %}
+
+
+    <!-- =====================================================
+         EXISTING PEEK JAVASCRIPT
+    ====================================================== -->
+    <script
+        src="{{ url_for('static', filename='js/peek.js') }}">
+    </script>
+
+
+    <!-- =====================================================
+         MARKET WEBSOCKET JAVASCRIPT
+    ====================================================== -->
+    <script
+        src="{{ url_for('static', filename='js/market.js') }}">
+    </script>
+
+</body>
+
+</html>

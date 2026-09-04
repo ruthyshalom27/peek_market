@@ -1,0 +1,1511 @@
+:root{
+    --cream:#fff9f6;
+    --paper:#fffefd;
+    --ink:#3e304f;
+    --muted:#756a82;
+    --line:#e8e0e5;
+    --pink:#ee72a6;
+    --pink-soft:#ffd2e5;
+    --yellow:#ffd878;
+    --lav:#eee8ff;
+    --mint:#a9ead3;
+    --blue:#9bd8ff;
+    --dark:#40334e;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:"DM Sans",Arial,sans-serif;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+button,
+input{
+    font-family:inherit;
+}
+
+
+/* =========================================================
+   PEEK BRAND
+   ========================================================= */
+
+.peek-brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.peek-brand .pk{
+    width:54px;
+    height:54px;
+    background:#ffb2cf;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-weight:700;
+    font-size:20px;
+    color:#3e304f;
+    box-shadow:inset 0 -7px #ed80ab;
+}
+
+.peek-brand b{
+    display:block;
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:22px;
+    line-height:1.1;
+}
+
+.peek-brand small{
+    display:block;
+    color:#71657c;
+    font-size:12px;
+    margin-top:3px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.dark-btn{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    border:0;
+    border-radius:999px;
+    background:var(--dark);
+    color:#fff;
+    padding:13px 25px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.dark-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 7px 15px rgba(62,48,79,.15);
+}
+
+.dark-btn.big{
+    padding:17px 27px;
+}
+
+.dark-btn.small{
+    padding:9px 17px;
+    font-size:12px;
+}
+
+.soft-btn{
+    border:0;
+    background:#a59fae;
+    color:white;
+    border-radius:999px;
+    padding:9px 15px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.text-btn{
+    background:transparent;
+    border:0;
+    color:#74677e;
+    font-size:10px;
+    margin-left:9px;
+    cursor:pointer;
+}
+
+.text-btn.danger{
+    color:#c16d7f;
+}
+
+
+/* =========================================================
+   LANDING PAGE
+   ========================================================= */
+
+.public-shell{
+    max-width:1400px;
+    margin:0 auto;
+    min-height:100vh;
+    padding:28px 52px;
+    background:var(--cream);
+}
+
+.public-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.landing{
+    padding-top:75px;
+}
+
+.eyebrow{
+    font-size:10px;
+    letter-spacing:1.5px;
+    color:#8b748e;
+    font-weight:800;
+}
+
+.yellow{
+    display:inline-block;
+    background:var(--yellow);
+    padding:8px 14px;
+    border-radius:999px;
+    color:#6d5a3d;
+}
+
+.landing h1{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:64px;
+    line-height:1.08;
+    letter-spacing:-2px;
+    margin:22px 0 28px;
+    max-width:950px;
+}
+
+.lead{
+    max-width:790px;
+    color:#6c607b;
+    font-size:18px;
+    line-height:1.55;
+}
+
+.hero-actions{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-top:38px;
+    color:#766a82;
+    font-size:12px;
+}
+
+.principles{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-top:58px;
+}
+
+.principles article{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:27px;
+    box-shadow:0 7px 0 #f0e8ea;
+    transition:.2s ease;
+}
+
+.principles article:hover{
+    transform:translateY(-4px);
+    box-shadow:0 11px 0 #f0e8ea;
+}
+
+.principles i{
+    display:block;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    margin-bottom:24px;
+}
+
+.pink-dot{
+    background:#ffafd0;
+}
+
+.blue-dot{
+    background:#a4dbff;
+}
+
+.mint-dot{
+    background:#9de5ca;
+}
+
+.principles h3{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:17px;
+    margin:0 0 12px;
+}
+
+.principles p{
+    color:#766a80;
+    font-size:12px;
+    line-height:1.55;
+    margin:0;
+}
+
+
+/* =========================================================
+   LOGIN / REGISTER
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   The old version used:
+   .auth-brand{position:absolute;top:75px}
+
+   That caused the Peek logo to overlap "Welcome back".
+
+   The new layout uses normal flex positioning.
+*/
+
+.auth-shell{
+    min-height:100vh;
+    background:var(--cream);
+    padding:45px 20px 35px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.auth-brand{
+    position:static;
+    width:530px;
+    max-width:100%;
+    margin-bottom:22px;
+}
+
+.auth-card{
+    width:530px;
+    max-width:100%;
+    background:#fff;
+    border:1px solid #e6dfe4;
+    border-radius:28px;
+    padding:34px;
+    box-shadow:0 9px 0 #eee6e8;
+}
+
+.auth-head h1{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:28px;
+    line-height:1.15;
+    margin:0 0 8px;
+}
+
+.auth-head p{
+    color:#766a80;
+    line-height:1.55;
+    font-size:14px;
+    margin:0;
+}
+
+.google-btn{
+    width:100%;
+    height:54px;
+    border:1px solid #ddd4da;
+    background:white;
+    border-radius:999px;
+    margin:25px 0 19px;
+    font-weight:700;
+    color:var(--ink);
+    cursor:pointer;
+    transition:.2s ease;
+}
+
+.google-btn:hover{
+    background:#fff9fc;
+    border-color:#cfc3cc;
+}
+
+.google-btn span{
+    color:#4285f4;
+    margin-right:8px;
+    font-size:17px;
+}
+
+.or{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    color:#8c7e8e;
+    font-size:12px;
+    margin-bottom:20px;
+}
+
+.or span{
+    height:1px;
+    background:#ded7dc;
+    flex:1;
+}
+
+.auth-card form{
+    display:grid;
+    gap:17px;
+}
+
+.auth-card label{
+    font-size:12px;
+    color:#6f6179;
+    font-weight:600;
+}
+
+.auth-card input{
+    display:block;
+    width:100%;
+    margin-top:7px;
+    padding:14px 16px;
+    border:1px solid #ded6dc;
+    background:#fffaf8;
+    border-radius:999px;
+    outline:0;
+    color:var(--ink);
+    font-size:14px;
+    transition:.2s ease;
+}
+
+.auth-card input:focus{
+    border:2px solid #ff9bc0;
+    padding:13px 15px;
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(255,155,192,.12);
+}
+
+.pass{
+    position:relative;
+}
+
+.pass i{
+    position:absolute;
+    right:17px;
+    top:14px;
+    color:#8c8090;
+    cursor:pointer;
+}
+
+.wide{
+    width:100%;
+}
+
+.auth-switch{
+    text-align:center;
+    color:#74677d;
+    font-size:12px;
+    margin:20px 0 0;
+}
+
+.auth-switch a{
+    color:#604c70;
+    text-decoration:underline;
+}
+
+.demo-note{
+    text-align:center;
+    margin-top:14px;
+    color:#85798a;
+    font-size:11px;
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard-shell{
+    display:flex;
+    min-height:100vh;
+}
+
+.peek-side{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:230px;
+    border-right:1px solid var(--line);
+    background:#fffaf8;
+    padding:28px 16px;
+    display:flex;
+    flex-direction:column;
+    z-index:10;
+}
+
+.side-brand{
+    padding:0 7px 32px;
+}
+
+.side-brand .pk{
+    width:39px;
+    height:39px;
+    font-size:15px;
+}
+
+.side-brand b{
+    font-size:16px;
+}
+
+.side-brand small{
+    font-size:9px;
+}
+
+.peek-side nav{
+    display:grid;
+    gap:4px;
+}
+
+.peek-side nav a{
+    padding:11px 13px;
+    border-radius:10px;
+    font-size:12px;
+    color:#766b7e;
+    transition:.2s ease;
+}
+
+.peek-side nav a.active,
+.peek-side nav a:hover{
+    background:#ffe4ed;
+    color:#4a3b58;
+    font-weight:700;
+}
+
+.peek-side nav i{
+    width:18px;
+    margin-right:7px;
+}
+
+.side-user{
+    margin-top:auto;
+    border-top:1px solid var(--line);
+    padding:15px 6px;
+    display:flex;
+    gap:9px;
+    align-items:center;
+}
+
+.side-user>span{
+    width:32px;
+    height:32px;
+    background:#e7dcff;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    font-weight:700;
+    font-size:12px;
+}
+
+.side-user b{
+    display:block;
+    font-size:11px;
+}
+
+.side-user small{
+    display:block;
+    color:#8c8090;
+    font-size:9px;
+}
+
+.dash-main{
+    margin-left:230px;
+    width:calc(100% - 230px);
+    max-width:1250px;
+}
+
+.dash-top{
+    height:72px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 32px;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    font-size:11px;
+}
+
+.top-right>a{
+    color:#756a80;
+}
+
+.feed{
+    background:#f1edff;
+    color:#665783;
+    border-radius:999px;
+    padding:8px 13px;
+}
+
+.dash-intro{
+    padding:30px 32px 15px;
+}
+
+.dash-intro h1{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:27px;
+    margin:0 0 6px;
+}
+
+.dash-intro p{
+    color:#776b82;
+    font-size:13px;
+    margin:0;
+}
+
+
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+.metric-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    padding:0 32px;
+}
+
+.metric-grid>div{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:19px;
+    padding:17px 19px;
+    box-shadow:0 7px 0 #eee7e9;
+}
+
+.metric-grid span{
+    font-size:9px;
+    color:#75677d;
+    letter-spacing:.8px;
+}
+
+.metric-grid strong{
+    display:block;
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:25px;
+    margin-top:7px;
+}
+
+.metric-grid small{
+    color:#796d84;
+    font-size:10px;
+}
+
+
+/* =========================================================
+   MARKET STRIP
+   ========================================================= */
+
+.market-strip{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    margin:25px 32px;
+    background:white;
+    border:1px solid var(--line);
+    border-radius:17px;
+    overflow:hidden;
+}
+
+.market-strip div{
+    padding:13px 17px;
+    border-right:1px solid var(--line);
+}
+
+.market-strip div:last-child{
+    border:0;
+}
+
+.market-strip span{
+    display:block;
+    color:#8a7d90;
+    font-size:9px;
+}
+
+.market-strip b{
+    display:inline-block;
+    font-size:14px;
+    margin:5px 7px 0 0;
+}
+
+.market-strip em{
+    font-style:normal;
+    font-size:10px;
+    font-weight:700;
+}
+
+.up{
+    color:#1b9a69;
+}
+
+.down{
+    color:#dc5b74;
+}
+
+
+/* =========================================================
+   DASHBOARD CONTENT
+   ========================================================= */
+
+.dash-grid{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 310px;
+    gap:20px;
+    padding:8px 32px;
+}
+
+.section-label{
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.yellow-pill{
+    background:var(--yellow);
+    border-radius:999px;
+    display:inline-block;
+    padding:7px 12px;
+    color:#6c5a42;
+}
+
+.quiet-card,
+.watch-card,
+.detail-placeholder,
+.side-card{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:0 7px 0 #eee7e9;
+}
+
+.quiet-card{
+    padding:22px;
+    margin:12px 0 28px;
+}
+
+.quiet-card h2{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:18px;
+    margin:0 0 8px;
+}
+
+.quiet-card p{
+    color:#74697d;
+    font-size:12px;
+    line-height:1.55;
+    margin:0;
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:17px 0 11px;
+}
+
+.section-title h2{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:18px;
+    margin:0;
+}
+
+
+/* =========================================================
+   WATCHLIST
+   ========================================================= */
+
+.watch-card{
+    overflow:hidden;
+    margin-bottom:17px;
+}
+
+.watch-head{
+    padding:17px 19px;
+    display:flex;
+    justify-content:space-between;
+    border-bottom:1px solid var(--line);
+}
+
+.watch-head h3{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:15px;
+    margin:0;
+}
+
+.watch-head span{
+    display:block;
+    color:#8a7d91;
+    font-size:9px;
+    margin-top:4px;
+}
+
+.ticker-row{
+    display:grid;
+    grid-template-columns:2fr 1fr 1.2fr 70px 35px 18px;
+    gap:10px;
+    align-items:center;
+    padding:12px 17px;
+    border-bottom:1px solid #f0e9ed;
+    transition:.15s ease;
+}
+
+.ticker-row:hover{
+    background:#fffbfa;
+}
+
+.ticker-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.mini-logo,
+.stock-icon{
+    background:#f7ddea;
+    color:#6e4d63;
+    display:grid;
+    place-items:center;
+    border-radius:9px;
+    font-weight:800;
+}
+
+.mini-logo{
+    width:34px;
+    height:34px;
+    font-size:9px;
+}
+
+.ticker-left b{
+    display:block;
+    font-size:11px;
+}
+
+.ticker-left small{
+    display:block;
+    color:#8b7e91;
+    font-size:9px;
+    margin-top:2px;
+}
+
+.spark{
+    height:28px;
+    display:flex;
+    gap:2px;
+    align-items:end;
+}
+
+.spark i{
+    width:3px;
+    background:#ef8ab5;
+    border-radius:3px;
+}
+
+.ticker-price{
+    text-align:right;
+}
+
+.ticker-price b{
+    display:block;
+    font-size:11px;
+}
+
+.ticker-price em{
+    font-style:normal;
+    font-size:9px;
+    font-weight:700;
+}
+
+.tag{
+    font-size:8px;
+    border-radius:999px;
+    padding:5px 7px;
+    text-align:center;
+    background:#e9f8f1;
+    color:#39946e;
+}
+
+.tag.medium{
+    background:#fff2cf;
+    color:#9a7834;
+}
+
+.tag.high{
+    background:#ffe1e8;
+    color:#c75470;
+}
+
+.score{
+    font-weight:800;
+    font-size:11px;
+    text-align:center;
+}
+
+.arrow{
+    font-size:10px;
+    color:#9d919f;
+}
+
+
+/* =========================================================
+   ADD TICKER
+   ========================================================= */
+
+.add-ticker{
+    display:flex;
+    padding:11px;
+    background:#fffaf8;
+    gap:7px;
+}
+
+.add-ticker input{
+    flex:1;
+    border:1px solid #e2d9df;
+    background:white;
+    border-radius:999px;
+    padding:9px 13px;
+    font-size:10px;
+    outline:0;
+}
+
+.add-ticker input:focus{
+    border-color:#ee72a6;
+}
+
+.add-ticker button{
+    border:0;
+    border-radius:999px;
+    background:#a59fae;
+    color:white;
+    padding:0 15px;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+
+/* =========================================================
+   RIGHT SIDEBAR
+   ========================================================= */
+
+.right-col{
+    display:grid;
+    gap:15px;
+    align-content:start;
+}
+
+.detail-placeholder,
+.side-card{
+    padding:19px;
+}
+
+.detail-placeholder h3,
+.side-card h3{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:15px;
+    margin:9px 0 5px;
+}
+
+.detail-placeholder p,
+.side-card p{
+    color:#776b81;
+    font-size:11px;
+    line-height:1.5;
+    margin:0;
+}
+
+.side-card h3{
+    font-size:14px;
+}
+
+.band{
+    height:7px;
+    background:#eee7f6;
+    border-radius:999px;
+    margin:21px 0 7px;
+    position:relative;
+}
+
+.band i{
+    display:block;
+    width:11px;
+    height:11px;
+    background:#ed75aa;
+    border-radius:50%;
+    position:absolute;
+    left:18%;
+    top:-2px;
+}
+
+.band-value{
+    text-align:right;
+    font-size:11px;
+}
+
+.chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:15px;
+}
+
+.chips span{
+    background:#ffd0e1;
+    border-radius:999px;
+    padding:7px 9px;
+    font-size:8px;
+    font-weight:700;
+}
+
+.attention-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-top:1px solid var(--line);
+    padding:11px 0;
+}
+
+.attention-item b,
+.attention-item small{
+    display:block;
+}
+
+.attention-item b{
+    font-size:11px;
+}
+
+.attention-item small{
+    color:#8a7d90;
+    font-size:9px;
+    margin-top:2px;
+}
+
+.attention-item em{
+    font-style:normal;
+    font-weight:800;
+    font-size:12px;
+}
+
+
+/* =========================================================
+   MARKET MOVERS
+   ========================================================= */
+
+.movers-section{
+    padding:15px 32px 50px;
+}
+
+.movers-section>.section-title span{
+    color:#8a7d90;
+    font-size:10px;
+}
+
+.mover-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.mover-columns>div{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:15px;
+}
+
+.mover-columns h3{
+    font-size:12px;
+    margin:0 0 8px;
+}
+
+.mover-columns a{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+    border-top:1px solid var(--line);
+    font-size:10px;
+}
+
+
+/* =========================================================
+   CREATE WATCHLIST MODAL
+   ========================================================= */
+
+.create-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#3d304f55;
+    z-index:20;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.create-overlay.open{
+    display:flex;
+}
+
+.create-box{
+    width:390px;
+    max-width:100%;
+    background:#fffaf8;
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:27px;
+    box-shadow:0 20px 70px #3d304f33;
+}
+
+.create-box>button{
+    float:right;
+    border:0;
+    background:none;
+    font-size:25px;
+    color:#8a7d91;
+    cursor:pointer;
+}
+
+.create-box h2{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    margin:8px 0;
+}
+
+.create-box p{
+    color:#776b81;
+    font-size:11px;
+}
+
+.create-box input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ded6dc;
+    border-radius:999px;
+    margin:8px 0 15px;
+    outline:0;
+}
+
+.create-box input:focus{
+    border-color:#ee72a6;
+}
+
+.back{
+    color:#7d7182;
+    font-size:12px;
+}
+
+
+/* =========================================================
+   STOCK DETAILS
+   ========================================================= */
+
+.stock-main{
+    padding-bottom:50px;
+}
+
+.stock-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:35px 32px 25px;
+}
+
+.stock-name{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.stock-icon{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#eee6ff;
+}
+
+.stock-name h1{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:26px;
+    margin:5px 0 0;
+}
+
+.stock-name p{
+    margin:2px 0;
+    color:#7a6e83;
+    font-size:11px;
+}
+
+.stock-price{
+    text-align:right;
+}
+
+.stock-price strong{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:31px;
+    display:block;
+}
+
+.stock-price span{
+    font-size:12px;
+    font-weight:700;
+}
+
+.stock-price small{
+    display:block;
+    color:#8a7d91;
+    font-size:9px;
+    margin-top:4px;
+}
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
+
+.chart-layout{
+    display:grid;
+    grid-template-columns:1fr 250px;
+    gap:15px;
+    padding:0 32px;
+}
+
+.big-chart,
+.stats-panel,
+.ai-summary,
+.signals{
+    background:white;
+    border:1px solid var(--line);
+    border-radius:20px;
+    box-shadow:0 7px 0 #eee7e9;
+}
+
+.big-chart{
+    padding:18px;
+}
+
+.range-tabs{
+    display:flex;
+    gap:20px;
+    color:#9a8e9d;
+    font-size:10px;
+}
+
+.range-tabs b{
+    color:#e25f99;
+}
+
+.canvas-wrap{
+    height:400px;
+    margin-top:10px;
+}
+
+
+/* =========================================================
+   STOCK STATS
+   ========================================================= */
+
+.stats-panel{
+    padding:20px;
+}
+
+.stats-panel h3{
+    font-family:"Space Grotesk",Arial,sans-serif;
+    font-size:14px;
+    margin:0 0 12px;
+}
+
+.stats-panel div{
+    display:flex;
+    justify-content:space-between;
+    border-top:1px solid var(--line);
+    padding:10px 0;
+    font-size:10px;
+}
+
+.stats-panel span{
+    color:#877a8d;
+}
+
+
+/* =========================================================
+   AI SUMMARY + SIGNALS
+   ========================================================= */
+
+.below-grid{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    gap:15px;
+    padding:20px 32px;
+}
+
+.ai-summary,
+.signals{
+    padding:17px;
+}
+
+.ai-summary p{
+    font-size:11px;
+    line-height:1.55;
+    color:#776b81;
+}
+
+.signals>div{
+    display:flex;
+    gap:6px;
+    margin-top:12px;
+}
+
+.signals>div span{
+    background:#ffd0e1;
+    padding:7px 9px;
+    border-radius:999px;
+    font-size:8px;
+    font-weight:700;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:950px){
+
+    .peek-side{
+        width:190px;
+    }
+
+    .dash-main{
+        margin-left:190px;
+        width:calc(100% - 190px);
+    }
+
+    .metric-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .dash-grid{
+        grid-template-columns:1fr;
+    }
+
+    .right-col{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .chart-layout{
+        grid-template-columns:1fr;
+    }
+
+    .below-grid{
+        grid-template-columns:1fr;
+    }
+
+    .landing h1{
+        font-size:48px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:700px){
+
+    .peek-side{
+        display:none;
+    }
+
+    .dash-main{
+        margin:0;
+        width:100%;
+    }
+
+    .public-shell{
+        padding:20px;
+    }
+
+    .public-nav{
+        align-items:flex-start;
+    }
+
+    .landing{
+        padding-top:55px;
+    }
+
+    .landing h1{
+        font-size:40px;
+        letter-spacing:-1px;
+    }
+
+    .lead{
+        font-size:15px;
+    }
+
+    .principles{
+        grid-template-columns:1fr;
+    }
+
+    .hero-actions{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    /*
+       Login page mobile fix.
+       Brand stays ABOVE the card instead of overlapping it.
+    */
+
+    .auth-shell{
+        padding:30px 15px;
+        justify-content:center;
+    }
+
+    .auth-brand{
+        position:static;
+        width:100%;
+        max-width:530px;
+        margin-bottom:18px;
+    }
+
+    .auth-card{
+        width:100%;
+        max-width:530px;
+        padding:27px 22px;
+        border-radius:24px;
+    }
+
+    .auth-head h1{
+        font-size:25px;
+    }
+
+    .metric-grid{
+        grid-template-columns:1fr 1fr;
+        padding:0 15px;
+    }
+
+    .dash-top,
+    .dash-intro{
+        padding-left:15px;
+        padding-right:15px;
+    }
+
+    .top-right>a{
+        display:none;
+    }
+
+    .market-strip{
+        margin-left:15px;
+        margin-right:15px;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .market-strip div:nth-child(2){
+        border-right:0;
+    }
+
+    .dash-grid{
+        padding:8px 15px;
+    }
+
+    .movers-section{
+        padding-left:15px;
+        padding-right:15px;
+    }
+
+    .ticker-row{
+        grid-template-columns:1.8fr 1fr auto;
+    }
+
+    .spark,
+    .tag{
+        display:none;
+    }
+
+    .ticker-price{
+        text-align:right;
+    }
+
+    .arrow{
+        display:none;
+    }
+
+    .right-col{
+        grid-template-columns:1fr;
+    }
+
+    .stock-heading{
+        padding:25px 15px;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    .stock-price{
+        text-align:left;
+    }
+
+    .chart-layout,
+    .below-grid{
+        padding-left:15px;
+        padding-right:15px;
+    }
+
+    .canvas-wrap{
+        height:300px;
+    }
+
+    .mover-columns{
+        grid-template-columns:1fr;
+    }
+}
+
+
+/* =========================================================
+   EXTRA SMALL MOBILE
+   ========================================================= */
+
+@media(max-width:420px){
+
+    .peek-brand .pk{
+        width:46px;
+        height:46px;
+        font-size:17px;
+    }
+
+    .peek-brand b{
+        font-size:19px;
+    }
+
+    .peek-brand small{
+        font-size:10px;
+    }
+
+    .auth-card{
+        padding:24px 18px;
+    }
+
+    .auth-head h1{
+        font-size:23px;
+    }
+
+    .google-btn{
+        height:50px;
+    }
+
+    .metric-grid{
+        gap:9px;
+    }
+
+    .metric-grid>div{
+        padding:14px;
+    }
+
+    .metric-grid strong{
+        font-size:21px;
+    }
+}

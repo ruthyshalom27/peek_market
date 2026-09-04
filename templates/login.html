@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block body %}
+<div class="auth-shell">
+<div class="auth-brand"><a class="peek-brand" href="/"><span class="pk">Pk</span><span><b>Peek</b><small>market watchlist digest</small></span></a></div>
+<div class="auth-card">
+  <div class="auth-head"><h1>Welcome back</h1><p>Your baseline travels with your account, so any device picks up where you left off.</p></div>
+  <button class="google-btn"><span>G</span> Continue with Google</button>
+  <div class="or"><span></span>or email<span></span></div>
+  <form method="post">
+    <label>Email<input name="email" type="email" value="demo@peek.app" required></label>
+    <label>Password<div class="pass"><input name="password" type="password" value="demo123" required><i class="bi bi-eye"></i></div></label>
+    <button class="dark-btn wide">Sign in</button>
+  </form>
+  <p class="auth-switch">No account yet? <a href="/register">Create one</a></p>
+</div>
+<div class="demo-note">Demo: <b>demo@peek.app</b> · <b>demo123</b></div>
+</div>
+{% endblock %}

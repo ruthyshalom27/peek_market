@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<div class="public-shell">
+<header class="public-nav">
+  <a class="peek-brand" href="/"><span class="pk">Pk</span><span><b>Peek</b><small>market watchlist digest</small></span></a>
+  <a class="dark-btn" href="/login">Sign in</a>
+</header>
+<main class="landing">
+  <div class="eyebrow yellow">SINCE YOU LAST CHECKED</div>
+  <h1>A watchlist that remembers<br>where you left off.</h1>
+  <p class="lead">Most watchlists show you today. Peek shows you the difference between now and the last moment you actually paid attention — then explains, in one sentence, why it matters.</p>
+  <div class="hero-actions"><a class="dark-btn big" href="/register">Start your watchlist</a><span>Free · your list syncs across devices</span></div>
+  <div class="principles">
+    <article><i class="pink-dot"></i><h3>Your baseline, not the close</h3><p>Every delta is measured from the exact snapshot you last acknowledged — even if that was nine days ago.</p></article>
+    <article><i class="blue-dot"></i><h3>Ranked, not listed</h3><p>Gaps, volume spikes, 52-week breaks and direction flips are scored, so the loudest thing is on top.</p></article>
+    <article><i class="mint-dot"></i><h3>Honest about freshness</h3><p>Live, delayed or stale is stamped on every number. A confident chart over an hour-old print is a lie.</p></article>
+  </div>
+</main>
+</div>
+{% endblock %}

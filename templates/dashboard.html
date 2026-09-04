@@ -1,0 +1,2491 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="dashboard-page">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <div class="eyebrow">
+                SMART MARKET WATCHLIST
+            </div>
+
+            <h1>
+                Peek market
+                <span>watchlist digest</span>
+            </h1>
+
+            <p class="dashboard-subtitle">
+                A personalized snapshot of the stocks that matter most to you.
+            </p>
+
+        </div>
+
+
+        <div class="header-actions">
+
+            <div class="market-status">
+
+                <span
+                    class="status-dot"
+                    id="connectionDot">
+                </span>
+
+                <span id="connectionText">
+                    Connecting to market stream...
+                </span>
+
+            </div>
+
+
+            <button
+                class="refresh-btn"
+                onclick="window.location.reload()">
+
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Refresh
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SINCE YOU LAST CHECKED
+    ====================================================== -->
+
+    <section class="digest-card">
+
+        <div class="digest-left">
+
+            <div class="digest-icon">
+                ✦
+            </div>
+
+
+            <div>
+
+                <div class="digest-label">
+                    SINCE YOU LAST CHECKED
+                </div>
+
+                <div class="digest-title">
+                    Your market snapshot
+                </div>
+
+                <div class="digest-time">
+                    Updated {{ checked }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="digest-stats">
+
+
+            <div class="digest-stat">
+
+                <strong>
+                    {{ tracked }}
+                </strong>
+
+                <span>
+                    Tracked
+                </span>
+
+            </div>
+
+
+            <div class="digest-stat positive">
+
+                <strong>
+                    {{ up_since_check }}
+                </strong>
+
+                <span>
+                    Moving up
+                </span>
+
+            </div>
+
+
+            <div class="digest-stat negative">
+
+                <strong>
+                    {{ down_since_check }}
+                </strong>
+
+                <span>
+                    Moving down
+                </span>
+
+            </div>
+
+
+            <div class="digest-stat attention">
+
+                <strong>
+                    {{ attention_count }}
+                </strong>
+
+                <span>
+                    Need attention
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         MARKET OVERVIEW
+    ====================================================== -->
+
+    <section class="section-block">
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="section-kicker">
+                    MARKET PULSE
+                </div>
+
+                <h2>
+                    Today's market overview
+                </h2>
+
+            </div>
+
+
+            <div class="small-note">
+                NSE / NIFTY 50 data
+            </div>
+
+        </div>
+
+
+        <div class="market-grid">
+
+
+            {% for index in indexes %}
+
+            <div class="market-card">
+
+                <div class="market-card-top">
+
+                    <div>
+
+                        <div class="market-name">
+                            {{ index.name }}
+                        </div>
+
+                        <div class="market-symbol">
+                            {{ index.symbol }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="market-badge">
+                        INDEX
+                    </div>
+
+                </div>
+
+
+                <div class="market-price">
+
+                    ₹{{ "%.2f"|format(index.price) }}
+
+                </div>
+
+
+                <div class="
+                    market-change
+                    {% if index.change >= 0 %}
+                        positive
+                    {% else %}
+                        negative
+                    {% endif %}
+                ">
+
+                    {% if index.change >= 0 %}
+                        ↑
+                    {% else %}
+                        ↓
+                    {% endif %}
+
+                    {{ "%.2f"|format(index.change) }}%
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+
+
+            <!-- WATCHLIST SUMMARY -->
+
+            <div class="market-card market-summary-card">
+
+                <div class="market-card-top">
+
+                    <div>
+
+                        <div class="market-name">
+                            Watchlist
+                        </div>
+
+                        <div class="market-symbol">
+                            Your tracked stocks
+                        </div>
+
+                    </div>
+
+
+                    <div class="market-badge purple">
+                        SMART
+                    </div>
+
+                </div>
+
+
+                <div class="market-price">
+                    {{ tracked }}
+                </div>
+
+
+                <div class="market-summary-text">
+                    stocks currently being monitored
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SMART ATTENTION ENGINE
+    ====================================================== -->
+
+    <section class="section-block">
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="section-kicker">
+                    SMART ATTENTION ENGINE
+                </div>
+
+                <h2>
+
+                    {% if attention_count > 0 %}
+
+                        {{ attention_count }}
+                        stocks need your attention
+
+                    {% else %}
+
+                        All quiet
+
+                    {% endif %}
+
+                </h2>
+
+
+                <p>
+                    Prioritized using price movement, volume,
+                    volatility, trend and 52-week position.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        {% if attention %}
+
+        <div class="attention-grid">
+
+
+            {% for stock in attention %}
+
+            <div class="
+                attention-card
+                {% if stock.severity == 'critical' %}
+                    critical
+                {% elif stock.severity == 'high' %}
+                    high
+                {% elif stock.severity == 'medium' %}
+                    medium
+                {% else %}
+                    low
+                {% endif %}
+            ">
+
+
+                <!-- TOP -->
+
+                <div class="attention-top">
+
+                    <div>
+
+                        <div class="stock-symbol">
+                            {{ stock.short_symbol }}
+                        </div>
+
+                        <div class="stock-name">
+                            {{ stock.name }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="attention-score">
+
+                        <span>
+                            {{ stock.score }}
+                        </span>
+
+                        <small>
+                            /100
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PRICE -->
+
+                <div class="attention-price">
+
+                    ₹{{ "%.2f"|format(stock.price) }}
+
+
+                    <span class="
+                        {% if stock.change >= 0 %}
+                            positive
+                        {% else %}
+                            negative
+                        {% endif %}
+                    ">
+
+                        {% if stock.change >= 0 %}
+                            ↑
+                        {% else %}
+                            ↓
+                        {% endif %}
+
+                        {{ "%.2f"|format(stock.change) }}%
+
+                    </span>
+
+                </div>
+
+
+
+                <!-- WHY -->
+
+                {% if stock.primary_reason %}
+
+                <div class="attention-reason">
+
+                    <span class="reason-icon">
+                        ✦
+                    </span>
+
+                    <span>
+                        {{ stock.primary_reason }}
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+
+
+                <!-- SMART METRICS -->
+
+                <div class="smart-metrics">
+
+
+                    <div class="smart-metric">
+
+                        <span class="metric-label">
+                            Trend
+                        </span>
+
+                        <strong>
+
+                            {% if stock.trend_up %}
+                                Bullish
+                            {% else %}
+                                Bearish
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="smart-metric">
+
+                        <span class="metric-label">
+                            Volume
+                        </span>
+
+                        <strong>
+
+                            {% if stock.volume_ratio and stock.volume_ratio > 1.5 %}
+
+                                {{ "%.1f"|format(stock.volume_ratio) }}×
+
+                            {% else %}
+
+                                Normal
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="smart-metric">
+
+                        <span class="metric-label">
+                            Confidence
+                        </span>
+
+                        <strong>
+                            {{ stock.confidence }}%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- FOOTER -->
+
+                <div class="attention-footer">
+
+                    <span class="severity-pill">
+                        {{ stock.severity|upper }}
+                    </span>
+
+
+                    <a
+                        href="{{ url_for('stock', symbol=stock.symbol) }}"
+                        class="view-stock">
+
+                        View stock →
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+
+        <div class="empty-card">
+
+            <div class="empty-icon">
+                ✓
+            </div>
+
+            <h3>
+                Nothing unusual right now
+            </h3>
+
+            <p>
+                Your tracked stocks are behaving normally.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+    </section>
+
+
+
+    <!-- =====================================================
+         TOP MOVERS
+    ====================================================== -->
+
+    <section class="section-block">
+
+
+        <div class="section-heading">
+
+            <div>
+
+                <div class="section-kicker">
+                    MARKET MOVERS
+                </div>
+
+                <h2>
+                    What's moving?
+                </h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="movers-grid">
+
+
+            <!-- GAINERS -->
+
+            <div class="mover-panel">
+
+
+                <div class="mover-header">
+
+                    <div>
+
+                        <span class="mover-dot positive-dot"></span>
+
+                        Top gainers
+
+                    </div>
+
+                    <span>
+                        ↑
+                    </span>
+
+                </div>
+
+
+
+                {% for stock in gainers %}
+
+                <a
+                    href="{{ url_for('stock', symbol=stock.symbol) }}"
+                    class="mover-row">
+
+
+                    <div class="mover-stock">
+
+                        <div class="mini-symbol">
+                            {{ stock.short_symbol[:2] }}
+                        </div>
+
+
+                        <div>
+
+                            <strong>
+                                {{ stock.short_symbol }}
+                            </strong>
+
+                            <small>
+                                {{ stock.name }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="mover-price">
+
+                        <strong>
+                            ₹{{ "%.2f"|format(stock.price) }}
+                        </strong>
+
+                        <span class="positive">
+
+                            +
+
+                            {{ "%.2f"|format(stock.change) }}%
+
+                        </span>
+
+                    </div>
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+
+
+            <!-- LOSERS -->
+
+            <div class="mover-panel">
+
+
+                <div class="mover-header">
+
+                    <div>
+
+                        <span class="mover-dot negative-dot"></span>
+
+                        Top losers
+
+                    </div>
+
+                    <span>
+                        ↓
+                    </span>
+
+                </div>
+
+
+
+                {% for stock in losers %}
+
+                <a
+                    href="{{ url_for('stock', symbol=stock.symbol) }}"
+                    class="mover-row">
+
+
+                    <div class="mover-stock">
+
+                        <div class="mini-symbol">
+                            {{ stock.short_symbol[:2] }}
+                        </div>
+
+
+                        <div>
+
+                            <strong>
+                                {{ stock.short_symbol }}
+                            </strong>
+
+                            <small>
+                                {{ stock.name }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="mover-price">
+
+                        <strong>
+                            ₹{{ "%.2f"|format(stock.price) }}
+                        </strong>
+
+                        <span class="negative">
+
+                            {{ "%.2f"|format(stock.change) }}%
+
+                        </span>
+
+                    </div>
+
+                </a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ALL WATCHLIST STOCKS
+    ====================================================== -->
+
+    <section class="section-block">
+
+
+        <div class="section-heading">
+
+
+            <div>
+
+                <div class="section-kicker">
+                    YOUR WATCHLIST
+                </div>
+
+                <h2>
+                    All tracked stocks
+                </h2>
+
+                <p>
+                    Smart signals update automatically through
+                    the market stream.
+                </p>
+
+            </div>
+
+
+            <div class="stock-count">
+                {{ stocks|length }} stocks
+            </div>
+
+        </div>
+
+
+
+        <div
+            class="stocks-grid"
+            id="stocksGrid">
+
+
+            {% for stock in stocks %}
+
+            <div
+                class="stock-card"
+                id="stock-{{ stock.short_symbol }}">
+
+
+                <!-- CARD HEADER -->
+
+                <div class="stock-card-top">
+
+
+                    <div class="stock-identity">
+
+
+                        <div class="stock-avatar">
+                            {{ stock.short_symbol[:1] }}
+                        </div>
+
+
+                        <div>
+
+                            <div class="stock-symbol">
+                                {{ stock.short_symbol }}
+                            </div>
+
+                            <div class="stock-name">
+                                {{ stock.name }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="stock-live">
+
+                        <span class="live-dot"></span>
+
+                        <span>
+                            Stream
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PRICE -->
+
+                <div class="stock-price-row">
+
+
+                    <div
+                        class="stock-price"
+                        data-price="{{ stock.short_symbol }}">
+
+                        ₹{{ "%.2f"|format(stock.price) }}
+
+                    </div>
+
+
+                    <div
+                        class="
+                            stock-change
+                            {% if stock.change >= 0 %}
+                                positive
+                            {% else %}
+                                negative
+                            {% endif %}
+                        "
+                        data-change="{{ stock.short_symbol }}">
+
+                        {% if stock.change >= 0 %}
+                            ↑
+                        {% else %}
+                            ↓
+                        {% endif %}
+
+                        {{ "%.2f"|format(stock.change) }}%
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SMART SIGNAL -->
+
+                <div class="smart-signal">
+
+
+                    <div class="signal-header">
+
+                        <span>
+                            Smart signal
+                        </span>
+
+                        <span class="signal-score">
+                            {{ stock.score }}/100
+                        </span>
+
+                    </div>
+
+
+
+                    <div class="signal-bar">
+
+                        <div
+                            class="signal-fill"
+                            style="width: {{ stock.score }}%;">
+                        </div>
+
+                    </div>
+
+
+
+                    {% if stock.primary_reason %}
+
+                    <div class="signal-reason">
+
+                        ✦ {{ stock.primary_reason }}
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="signal-reason">
+
+                        ✓ No major unusual activity
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- METRICS -->
+
+                <div class="card-metrics">
+
+
+                    <div>
+
+                        <span>
+                            Trend
+                        </span>
+
+                        <strong>
+
+                            {% if stock.trend_up %}
+                                Bullish
+                            {% else %}
+                                Bearish
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <span>
+                            Volume
+                        </span>
+
+                        <strong>
+
+                            {% if stock.volume_ratio and stock.volume_ratio > 1.5 %}
+
+                                {{ "%.1f"|format(stock.volume_ratio) }}×
+
+                            {% else %}
+
+                                Normal
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+
+                    <div>
+
+                        <span>
+                            Confidence
+                        </span>
+
+                        <strong>
+                            {{ stock.confidence }}%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- FOOTER -->
+
+                <div class="stock-card-footer">
+
+
+                    <span class="sector-tag">
+                        {{ stock.sector }}
+                    </span>
+
+
+                    <a
+                        href="{{ url_for('stock', symbol=stock.symbol) }}"
+                        class="stock-link">
+
+                        Details →
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         WHY PEEK
+    ====================================================== -->
+
+    <section class="why-card">
+
+
+        <div class="why-icon">
+            ✦
+        </div>
+
+
+        <div>
+
+            <div class="section-kicker">
+                WHY PEEK?
+            </div>
+
+            <h2>
+                Your watchlist should tell you what matters.
+            </h2>
+
+            <p>
+
+                Instead of making you check every stock manually,
+                Peek prioritizes unusual price movement, volume,
+                volatility, trend changes and 52-week positioning.
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     DASHBOARD STYLING
+========================================================= -->
+
+<style>
+
+
+.dashboard-page {
+
+    padding: 34px 42px 60px;
+
+}
+
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.dashboard-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 25px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.eyebrow,
+.section-kicker {
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.6px;
+
+    text-transform: uppercase;
+
+    opacity: .55;
+
+}
+
+
+.dashboard-header h1 {
+
+    margin: 8px 0 8px;
+
+    font-size: 42px;
+
+    line-height: 1.05;
+
+    letter-spacing: -1.5px;
+
+}
+
+
+.dashboard-header h1 span {
+
+    display: block;
+
+    font-style: italic;
+
+    font-weight: 500;
+
+}
+
+
+.dashboard-subtitle {
+
+    margin: 0;
+
+    opacity: .6;
+
+    font-size: 14px;
+
+}
+
+
+.header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.market-status {
+
+    padding: 10px 14px;
+
+    border-radius: 999px;
+
+    background: rgba(255,255,255,.7);
+
+    border: 1px solid rgba(0,0,0,.06);
+
+    font-size: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.status-dot,
+.live-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #58a878;
+
+    display: inline-block;
+
+}
+
+
+.refresh-btn {
+
+    border: none;
+
+    padding: 11px 16px;
+
+    border-radius: 999px;
+
+    background: #1e1b20;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =========================================================
+   DIGEST
+========================================================= */
+
+.digest-card {
+
+    background: #f0e7ff;
+
+    border-radius: 28px;
+
+    padding: 24px 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 45px;
+
+}
+
+
+.digest-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+
+.digest-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    border-radius: 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #fff;
+
+    font-size: 24px;
+
+}
+
+
+.digest-label {
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+
+    opacity: .55;
+
+}
+
+
+.digest-title {
+
+    font-size: 21px;
+
+    font-weight: 800;
+
+    margin-top: 3px;
+
+}
+
+
+.digest-time {
+
+    font-size: 12px;
+
+    opacity: .5;
+
+    margin-top: 3px;
+
+}
+
+
+.digest-stats {
+
+    display: flex;
+
+    gap: 30px;
+
+}
+
+
+.digest-stat {
+
+    text-align: center;
+
+}
+
+
+.digest-stat strong {
+
+    display: block;
+
+    font-size: 24px;
+
+}
+
+
+.digest-stat span {
+
+    font-size: 11px;
+
+    opacity: .55;
+
+}
+
+
+.digest-stat.positive strong {
+
+    color: #438c61;
+
+}
+
+
+.digest-stat.negative strong {
+
+    color: #c76068;
+
+}
+
+
+.digest-stat.attention strong {
+
+    color: #8b65bb;
+
+}
+
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section-block {
+
+    margin-bottom: 48px;
+
+}
+
+
+.section-heading {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-end;
+
+    margin-bottom: 18px;
+
+}
+
+
+.section-heading h2 {
+
+    margin: 5px 0 3px;
+
+    font-size: 25px;
+
+    letter-spacing: -.5px;
+
+}
+
+
+.section-heading p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    opacity: .5;
+
+}
+
+
+.small-note,
+.stock-count {
+
+    font-size: 11px;
+
+    opacity: .5;
+
+}
+
+
+
+/* =========================================================
+   MARKET CARDS
+========================================================= */
+
+.market-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 16px;
+
+}
+
+
+.market-card {
+
+    background: #fff;
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    border: 1px solid rgba(0,0,0,.055);
+
+}
+
+
+.market-card-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.market-name {
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+}
+
+
+.market-symbol {
+
+    font-size: 11px;
+
+    opacity: .45;
+
+    margin-top: 2px;
+
+}
+
+
+.market-badge {
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: .7px;
+
+    padding: 6px 8px;
+
+    border-radius: 999px;
+
+    background: #fff0b8;
+
+}
+
+
+.market-badge.purple {
+
+    background: #eadcff;
+
+}
+
+
+.market-price {
+
+    margin-top: 25px;
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+}
+
+
+.market-change {
+
+    margin-top: 5px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+.market-summary-text {
+
+    font-size: 12px;
+
+    opacity: .5;
+
+    margin-top: 4px;
+
+}
+
+
+
+/* =========================================================
+   ATTENTION
+========================================================= */
+
+.attention-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 16px;
+
+}
+
+
+.attention-card {
+
+    background: #fff;
+
+    border-radius: 25px;
+
+    padding: 22px;
+
+    border: 1px solid rgba(0,0,0,.055);
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+.attention-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 5px;
+
+    background: #d8c8eb;
+
+}
+
+
+.attention-card.critical::before,
+.attention-card.high::before {
+
+    background: #e59aa0;
+
+}
+
+
+.attention-card.medium::before {
+
+    background: #e7c76d;
+
+}
+
+
+.attention-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.stock-symbol {
+
+    font-size: 16px;
+
+    font-weight: 900;
+
+}
+
+
+.stock-name {
+
+    font-size: 11px;
+
+    opacity: .5;
+
+    margin-top: 2px;
+
+}
+
+
+.attention-score {
+
+    background: #eee4fb;
+
+    border-radius: 14px;
+
+    padding: 8px 11px;
+
+    font-weight: 900;
+
+}
+
+
+.attention-score small {
+
+    font-size: 9px;
+
+    opacity: .5;
+
+}
+
+
+.attention-price {
+
+    font-size: 25px;
+
+    font-weight: 800;
+
+    margin-top: 18px;
+
+}
+
+
+.attention-price span {
+
+    font-size: 13px;
+
+    margin-left: 6px;
+
+}
+
+
+.attention-reason {
+
+    background: #faf7ff;
+
+    border-radius: 14px;
+
+    padding: 11px 13px;
+
+    margin-top: 15px;
+
+    font-size: 12px;
+
+}
+
+
+.reason-icon {
+
+    margin-right: 5px;
+
+}
+
+
+.smart-metrics {
+
+    display: grid;
+
+    grid-template-columns: repeat(3,1fr);
+
+    gap: 8px;
+
+    margin-top: 13px;
+
+}
+
+
+.smart-metric {
+
+    background: #faf9f8;
+
+    border-radius: 13px;
+
+    padding: 10px;
+
+}
+
+
+.metric-label {
+
+    display: block;
+
+    font-size: 9px;
+
+    opacity: .45;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+
+}
+
+
+.smart-metric strong {
+
+    display: block;
+
+    font-size: 11px;
+
+    margin-top: 4px;
+
+}
+
+
+.attention-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 16px;
+
+}
+
+
+.severity-pill {
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .7px;
+
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    background: #f2eaff;
+
+}
+
+
+.view-stock,
+.stock-link {
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    color: inherit;
+
+}
+
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty-card {
+
+    background: #fff;
+
+    border-radius: 25px;
+
+    padding: 45px;
+
+    text-align: center;
+
+}
+
+
+.empty-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    margin: auto;
+
+    border-radius: 50%;
+
+    background: #e4f2e7;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+}
+
+
+.empty-card h3 {
+
+    margin: 14px 0 5px;
+
+}
+
+
+.empty-card p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    opacity: .5;
+
+}
+
+
+
+/* =========================================================
+   MOVERS
+========================================================= */
+
+.movers-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2,1fr);
+
+    gap: 16px;
+
+}
+
+
+.mover-panel {
+
+    background: #fff;
+
+    border-radius: 25px;
+
+    padding: 20px;
+
+    border: 1px solid rgba(0,0,0,.055);
+
+}
+
+
+.mover-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-weight: 800;
+
+    margin-bottom: 8px;
+
+}
+
+
+.mover-header > div {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.mover-dot {
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+}
+
+
+.positive-dot {
+
+    background: #65a87d;
+
+}
+
+
+.negative-dot {
+
+    background: #d47b83;
+
+}
+
+
+.mover-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 13px 0;
+
+    border-top: 1px solid rgba(0,0,0,.05);
+
+    text-decoration: none;
+
+    color: inherit;
+
+}
+
+
+.mover-stock {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.mini-symbol {
+
+    width: 35px;
+
+    height: 35px;
+
+    border-radius: 11px;
+
+    background: #f1ebfa;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 900;
+
+    font-size: 11px;
+
+}
+
+
+.mover-stock strong {
+
+    display: block;
+
+    font-size: 12px;
+
+}
+
+
+.mover-stock small {
+
+    display: block;
+
+    max-width: 170px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    opacity: .45;
+
+    font-size: 10px;
+
+}
+
+
+.mover-price {
+
+    text-align: right;
+
+}
+
+
+.mover-price strong {
+
+    display: block;
+
+    font-size: 12px;
+
+}
+
+
+.mover-price span {
+
+    display: block;
+
+    font-size: 10px;
+
+    margin-top: 2px;
+
+}
+
+
+
+/* =========================================================
+   STOCK CARDS
+========================================================= */
+
+.stocks-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3,1fr);
+
+    gap: 16px;
+
+}
+
+
+.stock-card {
+
+    background: #fff;
+
+    border-radius: 25px;
+
+    padding: 20px;
+
+    border: 1px solid rgba(0,0,0,.055);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+
+}
+
+
+.stock-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 14px 35px rgba(50,35,60,.08);
+
+}
+
+
+.stock-card-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.stock-identity {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.stock-avatar {
+
+    width: 39px;
+
+    height: 39px;
+
+    border-radius: 13px;
+
+    background: #f0e7ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-weight: 900;
+
+}
+
+
+.stock-live {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    font-size: 9px;
+
+    opacity: .5;
+
+}
+
+
+.stock-price-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: baseline;
+
+    margin-top: 20px;
+
+}
+
+
+.stock-price {
+
+    font-size: 25px;
+
+    font-weight: 900;
+
+}
+
+
+.stock-change {
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+}
+
+
+
+/* =========================================================
+   SMART SIGNAL
+========================================================= */
+
+.smart-signal {
+
+    margin-top: 17px;
+
+    background: #faf8fc;
+
+    border-radius: 16px;
+
+    padding: 13px;
+
+}
+
+
+.signal-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+}
+
+
+.signal-score {
+
+    opacity: .6;
+
+}
+
+
+.signal-bar {
+
+    height: 6px;
+
+    background: #e9e4ed;
+
+    border-radius: 999px;
+
+    margin-top: 9px;
+
+    overflow: hidden;
+
+}
+
+
+.signal-fill {
+
+    height: 100%;
+
+    border-radius: 999px;
+
+    background: #b996d8;
+
+}
+
+
+.signal-reason {
+
+    font-size: 10px;
+
+    margin-top: 9px;
+
+    opacity: .6;
+
+}
+
+
+
+/* =========================================================
+   CARD METRICS
+========================================================= */
+
+.card-metrics {
+
+    display: grid;
+
+    grid-template-columns: repeat(3,1fr);
+
+    gap: 7px;
+
+    margin-top: 12px;
+
+}
+
+
+.card-metrics > div {
+
+    background: #faf9f8;
+
+    border-radius: 12px;
+
+    padding: 9px;
+
+}
+
+
+.card-metrics span {
+
+    display: block;
+
+    font-size: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .5px;
+
+    opacity: .45;
+
+}
+
+
+.card-metrics strong {
+
+    display: block;
+
+    font-size: 10px;
+
+    margin-top: 4px;
+
+}
+
+
+.stock-card-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 15px;
+
+}
+
+
+.sector-tag {
+
+    font-size: 9px;
+
+    background: #fff4c9;
+
+    border-radius: 999px;
+
+    padding: 6px 8px;
+
+}
+
+
+
+/* =========================================================
+   WHY PEEK
+========================================================= */
+
+.why-card {
+
+    display: flex;
+
+    gap: 18px;
+
+    align-items: flex-start;
+
+    background: #fff2ee;
+
+    border-radius: 28px;
+
+    padding: 28px;
+
+    margin-top: 10px;
+
+}
+
+
+.why-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    background: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 20px;
+
+}
+
+
+.why-card h2 {
+
+    margin: 6px 0 8px;
+
+    font-size: 23px;
+
+}
+
+
+.why-card p {
+
+    margin: 0;
+
+    max-width: 700px;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    opacity: .6;
+
+}
+
+
+
+/* =========================================================
+   COLORS
+========================================================= */
+
+.positive {
+
+    color: #438c61 !important;
+
+}
+
+
+.negative {
+
+    color: #c76068 !important;
+
+}
+
+
+
+/* =========================================================
+   WEBSOCKET UPDATE EFFECT
+========================================================= */
+
+.market-updated {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 0 2px rgba(185,150,216,.18);
+
+}
+
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .stocks-grid {
+
+        grid-template-columns: repeat(2,1fr);
+
+    }
+
+
+    .market-grid {
+
+        grid-template-columns: repeat(2,1fr);
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .dashboard-page {
+
+        padding: 25px 18px 45px;
+
+    }
+
+
+    .dashboard-header,
+    .digest-card {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .digest-stats {
+
+        width: 100%;
+
+        justify-content: space-between;
+
+    }
+
+
+    .attention-grid,
+    .movers-grid,
+    .stocks-grid,
+    .market-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .dashboard-header h1 {
+
+        font-size: 32px;
+
+    }
+
+}
+
+</style>
+
+
+{% endblock %}

@@ -1,0 +1,2090 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="stock-page">
+
+    <!-- =====================================================
+         BACK
+    ====================================================== -->
+
+    <a href="{{ url_for('dashboard') }}" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to watchlist
+    </a>
+
+
+    <!-- =====================================================
+         STOCK HEADER
+    ====================================================== -->
+
+    <div class="stock-header">
+
+        <div>
+
+            <div class="stock-eyebrow">
+                STOCK INSIGHT
+            </div>
+
+            <div class="stock-title-row">
+
+                <div class="big-stock-avatar">
+                    {{ quote.short_symbol[:1] if quote.short_symbol else symbol[:1] }}
+                </div>
+
+                <div>
+
+                    <h1>
+                        {{ quote.name }}
+                    </h1>
+
+                    <div class="stock-symbol-large">
+                        {{ symbol.replace(".NS", "") }}
+                        <span>·</span>
+                        {{ quote.sector }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="stock-stream-status">
+
+            <span class="stock-live-dot"></span>
+
+            <span id="stockConnectionText">
+                Market stream connected
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         MAIN PRICE CARD
+    ====================================================== -->
+
+    <div class="stock-main-grid">
+
+
+        <!-- PRICE -->
+
+        <div class="stock-price-card">
+
+            <div class="price-label">
+                CURRENT PRICE
+            </div>
+
+
+            <div
+                class="big-price"
+                id="stockPrice">
+
+                ₹{{ "%.2f"|format(quote.price) }}
+
+            </div>
+
+
+            <div
+                class="
+                    big-change
+                    {% if quote.change >= 0 %}
+                        positive
+                    {% else %}
+                        negative
+                    {% endif %}
+                "
+                id="stockChange">
+
+                {% if quote.change >= 0 %}
+                    ↑
+                {% else %}
+                    ↓
+                {% endif %}
+
+                {{ "%.2f"|format(quote.change) }}%
+
+            </div>
+
+
+            <div class="price-updated">
+
+                <i class="bi bi-clock"></i>
+
+                Updated
+                <span id="stockUpdated">
+                    {{ quote.updated }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ATTENTION SCORE -->
+
+        <div class="score-card">
+
+            <div class="score-top">
+
+                <div>
+
+                    <div class="price-label">
+                        SMART ATTENTION
+                    </div>
+
+                    <h2>
+                        Should you care?
+                    </h2>
+
+                </div>
+
+
+                <div class="score-circle">
+
+                    <strong id="attentionScore">
+                        {{ score }}
+                    </strong>
+
+                    <span>
+                        /100
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="score-progress">
+
+                <div
+                    id="scoreProgress"
+                    style="width: {{ score }}%;">
+                </div>
+
+            </div>
+
+
+            <div class="score-description">
+
+                {% if score >= 75 %}
+
+                    This stock shows significant unusual activity.
+
+                {% elif score >= 50 %}
+
+                    This stock is showing some activity worth watching.
+
+                {% elif score >= 25 %}
+
+                    Minor movement detected.
+
+                {% else %}
+
+                    No major unusual activity detected.
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         SMART EXPLANATION
+    ====================================================== -->
+
+    <section class="smart-explanation">
+
+        <div class="smart-explanation-icon">
+            ✦
+        </div>
+
+
+        <div class="smart-explanation-content">
+
+            <div class="stock-eyebrow">
+                PEEK EXPLAINS
+            </div>
+
+            <h2>
+                Why this stock matters
+            </h2>
+
+
+            {% if info and info.primary_reason %}
+
+            <div class="primary-reason">
+                {{ info.primary_reason }}
+            </div>
+
+            {% else %}
+
+            <div class="primary-reason">
+                No major unusual signal detected right now.
+            </div>
+
+            {% endif %}
+
+
+            {% if info and info.reasons %}
+
+            <div class="reason-list">
+
+                {% for reason in info.reasons %}
+
+                <div class="reason-item">
+
+                    <span>
+                        ✓
+                    </span>
+
+                    {{ reason }}
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CHART + METRICS
+    ====================================================== -->
+
+    <div class="chart-metrics-grid">
+
+
+        <!-- CHART -->
+
+        <section class="chart-card">
+
+            <div class="chart-header">
+
+                <div>
+
+                    <div class="stock-eyebrow">
+                        PRICE HISTORY
+                    </div>
+
+                    <h2>
+                        Recent movement
+                    </h2>
+
+                </div>
+
+
+                <div class="chart-period">
+                    Historical
+                </div>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="stockChart"></canvas>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- METRICS -->
+
+        <section class="metrics-card">
+
+            <div class="stock-eyebrow">
+                SMART METRICS
+            </div>
+
+            <h2>
+                What the data says
+            </h2>
+
+
+            <div class="metric-list">
+
+
+                <!-- TREND -->
+
+                <div class="detail-metric">
+
+                    <div class="detail-metric-icon purple">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+
+                    <div class="detail-metric-text">
+
+                        <span>
+                            Trend
+                        </span>
+
+                        <strong>
+
+                            {% if info and info.trend_up %}
+                                Bullish
+                            {% else %}
+                                Bearish
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- VOLUME -->
+
+                <div class="detail-metric">
+
+                    <div class="detail-metric-icon yellow">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+
+                    <div class="detail-metric-text">
+
+                        <span>
+                            Volume activity
+                        </span>
+
+                        <strong>
+
+                            {% if info and info.volume_ratio %}
+
+                                {{ "%.1f"|format(info.volume_ratio) }}×
+
+                                {% if info.volume_ratio > 1.5 %}
+                                    unusual
+                                {% else %}
+                                    normal
+                                {% endif %}
+
+                            {% else %}
+
+                                Normal
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- VOLATILITY -->
+
+                <div class="detail-metric">
+
+                    <div class="detail-metric-icon pink">
+                        <i class="bi bi-activity"></i>
+                    </div>
+
+                    <div class="detail-metric-text">
+
+                        <span>
+                            Volatility
+                        </span>
+
+                        <strong>
+
+                            {% if info and info.volatility_ratio %}
+
+                                {{ "%.1f"|format(info.volatility_ratio) }}×
+
+                            {% else %}
+
+                                Normal
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- CONFIDENCE -->
+
+                <div class="detail-metric">
+
+                    <div class="detail-metric-icon green">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+
+                    <div class="detail-metric-text">
+
+                        <span>
+                            Signal confidence
+                        </span>
+
+                        <strong>
+
+                            {% if info and info.confidence %}
+
+                                {{ info.confidence }}%
+
+                            {% else %}
+
+                                --
+
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         PRICE RANGE
+    ====================================================== -->
+
+    <section class="range-card">
+
+        <div class="range-header">
+
+            <div>
+
+                <div class="stock-eyebrow">
+                    52-WEEK POSITION
+                </div>
+
+                <h2>
+                    Where is the stock trading?
+                </h2>
+
+            </div>
+
+
+            <div class="range-current">
+
+                ₹{{ "%.2f"|format(quote.price) }}
+
+            </div>
+
+        </div>
+
+
+        <div class="range-values">
+
+            <span>
+                ₹{{ "%.2f"|format(quote.low) if quote.low is defined else "--" }}
+            </span>
+
+            <span>
+                52W Range
+            </span>
+
+            <span>
+                ₹{{ "%.2f"|format(quote.high) if quote.high is defined else "--" }}
+            </span>
+
+        </div>
+
+
+        <div class="range-track">
+
+            <div
+                class="range-fill"
+                id="rangeFill">
+            </div>
+
+            <div
+                class="range-marker"
+                id="rangeMarker">
+            </div>
+
+        </div>
+
+
+        <div class="range-labels">
+
+            <span>
+                52W Low
+            </span>
+
+            <span>
+                52W High
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         STOCK FACTS
+    ====================================================== -->
+
+    <section class="facts-section">
+
+        <div class="stock-eyebrow">
+            STOCK SNAPSHOT
+        </div>
+
+        <h2>
+            Key numbers
+        </h2>
+
+
+        <div class="facts-grid">
+
+
+            <div class="fact-card">
+
+                <span>
+                    Open
+                </span>
+
+                <strong>
+                    ₹{{ "%.2f"|format(quote.open) if quote.open is defined else "--" }}
+                </strong>
+
+            </div>
+
+
+            <div class="fact-card">
+
+                <span>
+                    High
+                </span>
+
+                <strong>
+                    ₹{{ "%.2f"|format(quote.high) if quote.high is defined else "--" }}
+                </strong>
+
+            </div>
+
+
+            <div class="fact-card">
+
+                <span>
+                    Low
+                </span>
+
+                <strong>
+                    ₹{{ "%.2f"|format(quote.low) if quote.low is defined else "--" }}
+                </strong>
+
+            </div>
+
+
+            <div class="fact-card">
+
+                <span>
+                    Volume
+                </span>
+
+                <strong>
+                    {{ "{:,.0f}".format(quote.volume) if quote.volume is defined else "--" }}
+                </strong>
+
+            </div>
+
+
+            <div class="fact-card">
+
+                <span>
+                    MA 50
+                </span>
+
+                <strong>
+
+                    {% if info and info.ma50 %}
+                        ₹{{ "%.2f"|format(info.ma50) }}
+                    {% else %}
+                        --
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+
+            <div class="fact-card">
+
+                <span>
+                    MA 200
+                </span>
+
+                <strong>
+
+                    {% if info and info.ma200 %}
+                        ₹{{ "%.2f"|format(info.ma200) }}
+                    {% else %}
+                        --
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DISCLAIMER
+    ====================================================== -->
+
+    <div class="data-note">
+
+        <i class="bi bi-info-circle"></i>
+
+        Market values are based on the historical NSE/NIFTY 50
+        dataset used by this project. The WebSocket stream replays
+        historical market data and is not a live Groww market feed.
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     CHART DATA
+========================================================= -->
+
+<script>
+
+const chartPoints = {{ points | tojson }};
+
+const stockSymbol = "{{ symbol }}";
+
+const initialPrice = {{ quote.price|default(0) }};
+
+const initialChange = {{ quote.change|default(0) }};
+
+
+
+/* =========================================================
+   CHART
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const canvas =
+            document.getElementById("stockChart");
+
+
+        if (!canvas) {
+            return;
+        }
+
+
+        if (
+            typeof Chart === "undefined"
+        ) {
+
+            console.error(
+                "Chart.js not loaded."
+            );
+
+            return;
+        }
+
+
+        const labels =
+            chartPoints.map(
+                function (point) {
+
+                    return point.date ||
+                           point.Date ||
+                           "";
+
+                }
+            );
+
+
+        const values =
+            chartPoints.map(
+                function (point) {
+
+                    return Number(
+                        point.price ||
+                        point.close ||
+                        point.Close ||
+                        0
+                    );
+
+                }
+            );
+
+
+        new Chart(
+            canvas,
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            label: stockSymbol
+                                .replace(".NS",""),
+
+                            data: values,
+
+                            borderWidth: 2,
+
+                            pointRadius: 0,
+
+                            tension: .35,
+
+                            fill: true
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+
+                        intersect: false,
+
+                        mode: "index"
+
+                    },
+
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        },
+
+                        tooltip: {
+
+                            displayColors: false,
+
+                            callbacks: {
+
+                                label:
+                                function (context) {
+
+                                    return " ₹" +
+                                        Number(
+                                            context.raw
+                                        ).toFixed(2);
+
+                                }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            grid: {
+
+                                display: false
+
+                            },
+
+                            ticks: {
+
+                                maxTicksLimit: 7,
+
+                                font: {
+
+                                    size: 10
+
+                                }
+
+                            }
+
+                        },
+
+
+                        y: {
+
+                            grid: {
+
+                                color:
+                                    "rgba(0,0,0,.05)"
+
+                            },
+
+                            ticks: {
+
+                                font: {
+
+                                    size: 10
+
+                                },
+
+                                callback:
+                                function (value) {
+
+                                    return "₹" +
+                                        Number(value)
+                                            .toFixed(0);
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+
+/* =========================================================
+   52-WEEK POSITION
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const low =
+            Number(
+                {{ quote.low|default(0) }}
+            );
+
+
+        const high =
+            Number(
+                {{ quote.high|default(0) }}
+            );
+
+
+        const price =
+            Number(
+                {{ quote.price|default(0) }}
+            );
+
+
+        const marker =
+            document.getElementById(
+                "rangeMarker"
+            );
+
+
+        if (
+            marker &&
+            high > low
+        ) {
+
+            let position =
+                ((price - low) /
+                (high - low)) * 100;
+
+
+            position =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        position
+                    )
+                );
+
+
+            marker.style.left =
+                position + "%";
+
+        }
+
+    }
+);
+
+</script>
+
+
+
+<!-- =========================================================
+     WEBSOCKET STOCK UPDATE
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        if (
+            typeof io === "undefined"
+        ) {
+
+            return;
+
+        }
+
+
+        const socket = io();
+
+
+        const priceElement =
+            document.getElementById(
+                "stockPrice"
+            );
+
+
+        const changeElement =
+            document.getElementById(
+                "stockChange"
+            );
+
+
+        const updatedElement =
+            document.getElementById(
+                "stockUpdated"
+            );
+
+
+        const connectionText =
+            document.getElementById(
+                "stockConnectionText"
+            );
+
+
+        socket.on(
+            "connect",
+            function () {
+
+                if (connectionText) {
+
+                    connectionText.textContent =
+                        "Market stream connected";
+
+                }
+
+            }
+        );
+
+
+        socket.on(
+            "disconnect",
+            function () {
+
+                if (connectionText) {
+
+                    connectionText.textContent =
+                        "Market stream disconnected";
+
+                }
+
+            }
+        );
+
+
+        socket.on(
+            "market_update",
+            function (data) {
+
+
+                const incomingSymbol =
+                    String(
+                        data.symbol || ""
+                    ).toUpperCase();
+
+
+                if (
+                    incomingSymbol !==
+                    stockSymbol.toUpperCase()
+                ) {
+
+                    return;
+
+                }
+
+
+                /* PRICE */
+
+                if (
+                    priceElement &&
+                    data.price !== undefined
+                ) {
+
+                    priceElement.textContent =
+                        "₹" +
+                        Number(
+                            data.price
+                        ).toFixed(2);
+
+                }
+
+
+                /* CHANGE */
+
+                if (
+                    changeElement &&
+                    data.change !== undefined
+                ) {
+
+                    const change =
+                        Number(
+                            data.change
+                        );
+
+
+                    changeElement.textContent =
+                        (change >= 0
+                            ? "↑ "
+                            : "↓ ") +
+                        change.toFixed(2) +
+                        "%";
+
+
+                    changeElement.classList.remove(
+                        "positive",
+                        "negative"
+                    );
+
+
+                    changeElement.classList.add(
+                        change >= 0
+                            ? "positive"
+                            : "negative"
+                    );
+
+                }
+
+
+                /* UPDATED */
+
+                if (
+                    updatedElement &&
+                    data.updated
+                ) {
+
+                    updatedElement.textContent =
+                        data.updated;
+
+                }
+
+
+                /* SCORE */
+
+                const score =
+                    data.attention ??
+                    data.score;
+
+
+                const scoreElement =
+                    document.getElementById(
+                        "attentionScore"
+                    );
+
+
+                const progress =
+                    document.getElementById(
+                        "scoreProgress"
+                    );
+
+
+                if (
+                    scoreElement &&
+                    score !== undefined
+                ) {
+
+                    scoreElement.textContent =
+                        score;
+
+                }
+
+
+                if (
+                    progress &&
+                    score !== undefined
+                ) {
+
+                    progress.style.width =
+                        Number(score) + "%";
+
+                }
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+
+
+<!-- =========================================================
+     STOCK PAGE CSS
+========================================================= -->
+
+<style>
+
+.stock-page {
+
+    padding: 30px 42px 60px;
+
+}
+
+
+
+/* BACK */
+
+.back-link {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    font-size: 12px;
+
+    opacity: .55;
+
+    margin-bottom: 28px;
+
+}
+
+
+
+/* HEADER */
+
+.stock-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.stock-eyebrow {
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    text-transform: uppercase;
+
+    opacity: .5;
+
+}
+
+
+.stock-title-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 9px;
+
+}
+
+
+.big-stock-avatar {
+
+    width: 58px;
+
+    height: 58px;
+
+    border-radius: 19px;
+
+    background: #f0e7ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 23px;
+
+    font-weight: 900;
+
+}
+
+
+.stock-title-row h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    letter-spacing: -.8px;
+
+}
+
+
+.stock-symbol-large {
+
+    font-size: 12px;
+
+    opacity: .5;
+
+    margin-top: 4px;
+
+}
+
+
+.stock-symbol-large span {
+
+    margin: 0 5px;
+
+}
+
+
+.stock-stream-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 9px 13px;
+
+    background: white;
+
+    border-radius: 999px;
+
+    border: 1px solid rgba(0,0,0,.05);
+
+    font-size: 11px;
+
+    opacity: .7;
+
+}
+
+
+.stock-live-dot {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #58a878;
+
+}
+
+
+
+/* MAIN */
+
+.stock-main-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 17px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.stock-price-card,
+.score-card {
+
+    background: white;
+
+    border-radius: 27px;
+
+    padding: 25px;
+
+    border: 1px solid rgba(0,0,0,.05);
+
+}
+
+
+.price-label {
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    opacity: .45;
+
+}
+
+
+.big-price {
+
+    font-size: 42px;
+
+    font-weight: 900;
+
+    letter-spacing: -1.5px;
+
+    margin-top: 13px;
+
+}
+
+
+.big-change {
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    margin-top: 2px;
+
+}
+
+
+.price-updated {
+
+    margin-top: 24px;
+
+    font-size: 10px;
+
+    opacity: .45;
+
+}
+
+
+
+/* SCORE */
+
+.score-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.score-card h2 {
+
+    margin: 5px 0 0;
+
+    font-size: 20px;
+
+}
+
+
+.score-circle {
+
+    width: 72px;
+
+    height: 72px;
+
+    border-radius: 50%;
+
+    background: #f0e7ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.score-circle strong {
+
+    font-size: 22px;
+
+}
+
+
+.score-circle span {
+
+    font-size: 9px;
+
+    opacity: .45;
+
+    margin-top: 10px;
+
+}
+
+
+.score-progress {
+
+    height: 8px;
+
+    background: #eee9f0;
+
+    border-radius: 999px;
+
+    margin-top: 25px;
+
+    overflow: hidden;
+
+}
+
+
+.score-progress div {
+
+    height: 100%;
+
+    border-radius: 999px;
+
+    background: #b996d8;
+
+    transition: width .4s ease;
+
+}
+
+
+.score-description {
+
+    font-size: 12px;
+
+    opacity: .55;
+
+    line-height: 1.5;
+
+    margin-top: 14px;
+
+}
+
+
+
+/* EXPLANATION */
+
+.smart-explanation {
+
+    display: flex;
+
+    gap: 18px;
+
+    background: #f0e7ff;
+
+    border-radius: 27px;
+
+    padding: 26px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.smart-explanation-icon {
+
+    width: 47px;
+
+    height: 47px;
+
+    flex-shrink: 0;
+
+    border-radius: 15px;
+
+    background: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 21px;
+
+}
+
+
+.smart-explanation-content h2 {
+
+    margin: 5px 0 10px;
+
+    font-size: 22px;
+
+}
+
+
+.primary-reason {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    line-height: 1.5;
+
+}
+
+
+.reason-list {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: 13px;
+
+}
+
+
+.reason-item {
+
+    padding: 8px 11px;
+
+    background: rgba(255,255,255,.65);
+
+    border-radius: 999px;
+
+    font-size: 10px;
+
+}
+
+
+
+/* CHART */
+
+.chart-metrics-grid {
+
+    display: grid;
+
+    grid-template-columns: 1.55fr .85fr;
+
+    gap: 17px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.chart-card,
+.metrics-card {
+
+    background: white;
+
+    border-radius: 27px;
+
+    padding: 24px;
+
+    border: 1px solid rgba(0,0,0,.05);
+
+}
+
+
+.chart-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.chart-header h2,
+.metrics-card h2 {
+
+    margin: 5px 0 0;
+
+    font-size: 21px;
+
+}
+
+
+.chart-period {
+
+    background: #f4edfb;
+
+    border-radius: 999px;
+
+    padding: 7px 10px;
+
+    font-size: 9px;
+
+}
+
+
+.chart-container {
+
+    height: 320px;
+
+    margin-top: 20px;
+
+}
+
+
+
+/* METRICS */
+
+.metric-list {
+
+    margin-top: 22px;
+
+}
+
+
+.detail-metric {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 13px 0;
+
+    border-bottom: 1px solid rgba(0,0,0,.05);
+
+}
+
+
+.detail-metric:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.detail-metric-icon {
+
+    width: 36px;
+
+    height: 36px;
+
+    border-radius: 11px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.detail-metric-icon.purple {
+
+    background: #eee4fb;
+
+}
+
+
+.detail-metric-icon.yellow {
+
+    background: #fff2c4;
+
+}
+
+
+.detail-metric-icon.pink {
+
+    background: #ffe8ed;
+
+}
+
+
+.detail-metric-icon.green {
+
+    background: #e5f2e8;
+
+}
+
+
+.detail-metric-text span {
+
+    display: block;
+
+    font-size: 9px;
+
+    opacity: .45;
+
+}
+
+
+.detail-metric-text strong {
+
+    display: block;
+
+    font-size: 12px;
+
+    margin-top: 2px;
+
+}
+
+
+
+/* RANGE */
+
+.range-card {
+
+    background: white;
+
+    border-radius: 27px;
+
+    padding: 25px;
+
+    margin-bottom: 35px;
+
+    border: 1px solid rgba(0,0,0,.05);
+
+}
+
+
+.range-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+}
+
+
+.range-header h2 {
+
+    margin: 5px 0 0;
+
+    font-size: 21px;
+
+}
+
+
+.range-current {
+
+    font-size: 20px;
+
+    font-weight: 900;
+
+}
+
+
+.range-values {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 25px;
+
+    font-size: 11px;
+
+}
+
+
+.range-values span:nth-child(2) {
+
+    opacity: .4;
+
+}
+
+
+.range-track {
+
+    position: relative;
+
+    height: 9px;
+
+    background: #eee8ef;
+
+    border-radius: 999px;
+
+    margin-top: 12px;
+
+}
+
+
+.range-fill {
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: 999px;
+
+    background: #d9c5ea;
+
+}
+
+
+.range-marker {
+
+    position: absolute;
+
+    top: 50%;
+
+    width: 17px;
+
+    height: 17px;
+
+    border-radius: 50%;
+
+    background: #262229;
+
+    border: 3px solid white;
+
+    box-shadow: 0 2px 7px rgba(0,0,0,.15);
+
+    transform: translate(-50%,-50%);
+
+}
+
+
+.range-labels {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 8px;
+
+    font-size: 9px;
+
+    opacity: .45;
+
+}
+
+
+
+/* FACTS */
+
+.facts-section {
+
+    margin-bottom: 30px;
+
+}
+
+
+.facts-section h2 {
+
+    margin: 5px 0 17px;
+
+    font-size: 23px;
+
+}
+
+
+.facts-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(6,1fr);
+
+    gap: 10px;
+
+}
+
+
+.fact-card {
+
+    background: white;
+
+    border-radius: 17px;
+
+    padding: 16px;
+
+    border: 1px solid rgba(0,0,0,.05);
+
+}
+
+
+.fact-card span {
+
+    display: block;
+
+    font-size: 9px;
+
+    opacity: .45;
+
+}
+
+
+.fact-card strong {
+
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 13px;
+
+}
+
+
+
+/* NOTE */
+
+.data-note {
+
+    background: #fff2ee;
+
+    border-radius: 17px;
+
+    padding: 13px 15px;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    opacity: .7;
+
+}
+
+
+
+/* COLORS */
+
+.positive {
+
+    color: #438c61 !important;
+
+}
+
+
+.negative {
+
+    color: #c76068 !important;
+
+}
+
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+
+    .facts-grid {
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+    }
+
+
+    .chart-metrics-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .stock-page {
+
+        padding: 25px 18px 45px;
+
+    }
+
+
+    .stock-header {
+
+        flex-direction: column;
+
+    }
+
+
+    .stock-main-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .stock-title-row h1 {
+
+        font-size: 24px;
+
+    }
+
+
+    .big-price {
+
+        font-size: 35px;
+
+    }
+
+
+    .facts-grid {
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+}
+
+</style>
+
+{% endblock %}
